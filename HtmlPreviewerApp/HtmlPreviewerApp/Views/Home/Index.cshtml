@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Martin's Html Previewer App";
+}
+
+@model HtmlPreviewerApp.Models.HtmlModel
+
+<div id="grid">
+
+</div>
+<textarea asp-for="HtmlSample" id="textarea" rows="5" cols="20"></textarea>
+<button id="run">Run</button>
+<div id="html-container"></div>
+<button id="save">Save</button>
+<script>
+    $("#grid").kendoGrid({
+        dataSource: {
+            type: "json",
+            transport: {
+                read: "Home/Read"
+            },
+            pageSize: 20,
+            schema: {
+                model: {
+                    id: "sampleID",
+                    fields: {
+                        sampleID: { type: "number" },
+                        createDate: { type: "date" },
+                        lastEditDate: { type: "date" }
+                    }
+                }
+            }
+        },
+        height: 550,
+        groupable: true,
+        sortable: true,
+        pageable: {
+            refresh: true,
+            pageSizes: true,
+            buttonCount: 5
+        },
+        columns: [
+        {
+            template: "<a class='getHtml' href='\\#'>#: title #</a>",
+            field: "title",
+            title: "Html Sample",
+            width: 240
+        },
+        {            
+            field: "sampleID",
+            title: "Sample Id",
+            width: 240
+        }, {
+            field: "createDate",
+            title: "Create Date"
+        }, {
+            field: "lastEditDate",
+            title: "Last Edit Date"
+        }, {
+            field: "Country",
+            width: 150
+        }]
+    });
+    
+    $("#run").click(function () {
+        var html = $("textarea").val();
+        $("#html-container").html(html)
+    });
+    $("#save").click(function () {
+        var html = $("textarea").val();
+        $.ajax({
+            type: "POST",
+            url: "/Home/Index",
+            data: { "html": html },
+            success: function (response) {
+                alert("record saved!");
+                $("#grid").data("kendoGrid").dataSource.read();
+            }           
+        });
+        
+    })
+
+    $("#grid").on("click", "a.getHtml", function (e) {
+        console.log($(e.target).closest("tr"));
+        var dataItem = $("#grid").data("kendoGrid").dataItem($(e.target).closest("tr"));
+        console.log(dataItem);
+        $.ajax({
+            type: "POST",
+            url: "/Home/GetHtml",
+            data: { "id": dataItem.id },
+            success: function (response) {
+                var html = response[0].htmlSample;
+                $("#textarea").val(html);
+                $("#html-container").html(html);
+            }
+        });
+        return false;
+    })
+</script>
