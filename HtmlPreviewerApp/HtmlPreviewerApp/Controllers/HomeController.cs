@@ -19,23 +19,37 @@ namespace HtmlPreviewerApp.Controllers
 
         public IActionResult Index()
         {
+            
             return View();
         }
         [HttpPost]
-        public IActionResult Index(string html)
+        public IActionResult Index(string html, int? editId)
         {
-            var id = _cc.HtmlSamples.Count();
-            var model = new HtmlModel()
+            if(editId != null)
             {
-                HtmlSample = html,
-                CreateDate = DateTime.Now,
-                LastEditDate = DateTime.Now,
-                SampleID = ++id,
-                Title = "Html Sample #"+ id
-                
-            };
-            _cc.Add(model);
-            _cc.SaveChanges();
+                var itemToUpdate = _cc.HtmlSamples.Where(model => model.SampleID == editId);
+                itemToUpdate.First().HtmlSample = html;
+                itemToUpdate.First().LastEditDate = DateTime.UtcNow;
+                _cc.SaveChanges();
+
+            }
+
+            else 
+            {
+                var id = _cc.HtmlSamples.Count();
+                var model = new HtmlModel()
+                {
+                    HtmlSample = html,
+                    CreateDate = DateTime.UtcNow,
+                    LastEditDate = DateTime.UtcNow,
+                    SampleID = ++id,
+                    Title = "Html Sample #" + id
+
+                };
+                _cc.Add(model);
+                _cc.SaveChanges();
+            }
+            
             return View();
         }
    
@@ -48,8 +62,16 @@ namespace HtmlPreviewerApp.Controllers
 
         public IActionResult GetHtml(int id)
         {
+            ViewBag.EditId = id;
             var sample = _cc.HtmlSamples.Where(model => model.SampleID == id).ToList();
             return Json(sample);
+        }
+
+        public bool CheckOriginal(string value)
+        {
+            var result = _cc.HtmlSamples.Where(model => model.HtmlSample == value).Count() == 0;
+            return result;
+
         }
     }
 }

@@ -3,7 +3,9 @@
 }
 
 @model HtmlPreviewerApp.Models.HtmlModel
-
+@{ 
+    int id = ViewBag.EditId != null ? ViewBag.EditId : -1;
+}
 <div id="grid">
 
 </div>
@@ -11,7 +13,9 @@
 <button id="run">Run</button>
 <div id="html-container"></div>
 <button id="save">Save</button>
+<button id="checkOriginal">Check Original</button>
 <script>
+    var editId;
     $("#grid").kendoGrid({
         dataSource: {
             type: "json",
@@ -45,7 +49,7 @@
             title: "Html Sample",
             width: 240
         },
-        {            
+        {
             field: "sampleID",
             title: "Sample Id",
             width: 240
@@ -60,7 +64,7 @@
             width: 150
         }]
     });
-    
+
     $("#run").click(function () {
         var html = $("textarea").val();
         $("#html-container").html(html)
@@ -70,29 +74,42 @@
         $.ajax({
             type: "POST",
             url: "/Home/Index",
-            data: { "html": html },
+            data: { "html": html, "editId": editId },
             success: function (response) {
                 alert("record saved!");
                 $("#grid").data("kendoGrid").dataSource.read();
-            }           
+                editId = null;
+            }
         });
-        
+
     })
 
     $("#grid").on("click", "a.getHtml", function (e) {
-        console.log($(e.target).closest("tr"));
         var dataItem = $("#grid").data("kendoGrid").dataItem($(e.target).closest("tr"));
-        console.log(dataItem);
         $.ajax({
             type: "POST",
             url: "/Home/GetHtml",
             data: { "id": dataItem.id },
             success: function (response) {
                 var html = response[0].htmlSample;
+                editId = response[0].sampleID;
                 $("#textarea").val(html);
                 $("#html-container").html(html);
             }
         });
         return false;
+    })
+
+    $("#checkOriginal").click(function () {
+        var val = $("#textarea").val();
+        $.ajax({
+            type: "POST",
+            url: "/Home/CheckOriginal",
+            data: { "value": val },
+            success: function (response) {
+                var isOriginal = response == true ? "The current HTML sample is original." : "The current Html sample is not original."
+                kendo.alert(isOriginal)
+            }
+        });
     })
 </script>

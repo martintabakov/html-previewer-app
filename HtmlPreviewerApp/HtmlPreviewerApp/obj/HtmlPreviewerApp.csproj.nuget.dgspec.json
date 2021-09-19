@@ -44,10 +44,6 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
-            "KendoUIProfessional": {
-              "target": "Package",
-              "version": "[2021.3.914, )"
-            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[5.0.10, )"
@@ -56,13 +52,13 @@
               "target": "Package",
               "version": "[5.0.10, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "System.Data.SqlClient": {
               "target": "Package",
               "version": "[4.8.3, )"
-            },
-            "Telerik.UI.for.AspNet.Core": {
-              "target": "Package",
-              "version": "[2021.3.914, )"
             }
           },
           "imports": [
