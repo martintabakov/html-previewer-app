@@ -1,6 +1,6 @@
 # HTML Previewer Application
 
-An application that renders the value of a textarea as HTML.
+An application that renders the value of a textarea as HTML. The different HTML samples are stored in a database and can be loaded for editing.
 
 ## Used Technologies and libraries
 
