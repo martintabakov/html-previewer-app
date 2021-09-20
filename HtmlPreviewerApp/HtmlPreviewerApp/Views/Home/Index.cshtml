@@ -3,113 +3,186 @@
 }
 
 @model HtmlPreviewerApp.Models.HtmlModel
-@{ 
-    int id = ViewBag.EditId != null ? ViewBag.EditId : -1;
-}
-<div id="grid">
-
-</div>
-<textarea asp-for="HtmlSample" id="textarea" rows="5" cols="20"></textarea>
-<button id="run">Run</button>
-<div id="html-container"></div>
-<button id="save">Save</button>
-<button id="checkOriginal">Check Original</button>
-<script>
-    var editId;
-    $("#grid").kendoGrid({
-        dataSource: {
-            type: "json",
-            transport: {
-                read: "Home/Read"
-            },
-            pageSize: 20,
-            schema: {
-                model: {
-                    id: "sampleID",
-                    fields: {
-                        sampleID: { type: "number" },
-                        createDate: { type: "date" },
-                        lastEditDate: { type: "date" }
+    <div id="content-wrapper">
+<div id="input-area-wrapper">
+<h3>HTML Input</h3>
+<textarea asp-for="HtmlSample" id="input-area" rows="5" cols="20"></textarea>
+ </div>
+        <div id="btn-wrapper">
+            <button id="run">Run</button>
+            <button id="save">Save</button>
+            <button id="checkOriginal">Check Original</button>
+        </div>
+        <div id="html-container-wrapper">
+        <h3>HTML Preview</h3>
+        <div id="html-container"></div>
+        </div>
+    </div>
+    <div id="grid"></div>
+    <script>
+        var editId;
+        $("#grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: "Home/Read"
+                },
+                pageSize: 20,
+                schema: {
+                    model: {
+                        id: "sampleID",
+                        fields: {
+                            sampleID: { type: "number" },
+                            createDate: { type: "date" },
+                            lastEditDate: { type: "date" }
+                        }
                     }
                 }
-            }
-        },
-        height: 550,
-        groupable: true,
-        sortable: true,
-        pageable: {
-            refresh: true,
-            pageSizes: true,
-            buttonCount: 5
-        },
-        columns: [
-        {
-            template: "<a class='getHtml' href='\\#'>#: title #</a>",
-            field: "title",
-            title: "Html Sample",
-            width: 240
-        },
-        {
-            field: "sampleID",
-            title: "Sample Id",
-            width: 240
-        }, {
-            field: "createDate",
-            title: "Create Date"
-        }, {
-            field: "lastEditDate",
-            title: "Last Edit Date"
-        }, {
-            field: "Country",
-            width: 150
-        }]
-    });
-
-    $("#run").click(function () {
-        var html = $("textarea").val();
-        $("#html-container").html(html)
-    });
-    $("#save").click(function () {
-        var html = $("textarea").val();
-        $.ajax({
-            type: "POST",
-            url: "/Home/Index",
-            data: { "html": html, "editId": editId },
-            success: function (response) {
-                alert("record saved!");
-                $("#grid").data("kendoGrid").dataSource.read();
-                editId = null;
-            }
+            },
+            height: 350,
+            pageable: {
+                refresh: true,
+                pageSizes: true,
+                buttonCount: 5
+            },
+            columns: [
+                {
+                    template: "<a class='getHtml' href='#:sampleID#'>#: title #</a>",
+                    field: "title",
+                    title: "Html Sample",
+                    width: 240
+                },
+                {
+                    field: "sampleID",
+                    title: "Sample Id",
+                    width: 240
+                }, {
+                    field: "createDate",
+                    title: "Create Date"
+                }, {
+                    field: "lastEditDate",
+                    title: "Last Edit Date"
+                }, {
+                    field: "Country",
+                    width: 150
+                }]
         });
 
-    })
-
-    $("#grid").on("click", "a.getHtml", function (e) {
-        var dataItem = $("#grid").data("kendoGrid").dataItem($(e.target).closest("tr"));
-        $.ajax({
-            type: "POST",
-            url: "/Home/GetHtml",
-            data: { "id": dataItem.id },
-            success: function (response) {
-                var html = response[0].htmlSample;
-                editId = response[0].sampleID;
-                $("#textarea").val(html);
-                $("#html-container").html(html);
-            }
+        $("#run").click(function () {
+            var html = $("#input-area").val();
+            $("#html-container").html(html)
         });
-        return false;
-    })
+        $("#save").click(function () {
+            var html = $("#input-area").val();
+            $.ajax({
+                type: "POST",
+                url: "/Home/Index",
+                data: { "html": html, "editId": editId },
+                success: function (response) {
+                    alert("record saved!");
+                    $("#grid").data("kendoGrid").dataSource.read();
+                    editId = null;
+                }
+            });
 
-    $("#checkOriginal").click(function () {
-        var val = $("#textarea").val();
-        $.ajax({
-            type: "POST",
-            url: "/Home/CheckOriginal",
-            data: { "value": val },
-            success: function (response) {
-                var isOriginal = response == true ? "The current HTML sample is original." : "The current Html sample is not original."
-                kendo.alert(isOriginal)
+        })
+
+        $("#grid").on("click", "a.getHtml", function (e) {
+            var dataItem = $("#grid").data("kendoGrid").dataItem($(e.target).closest("tr"));
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetHtml",
+                data: { "id": dataItem.id },
+                success: function (response) {
+                    var html = response[0].htmlSample;
+                    editId = response[0].sampleID;
+                    $("#input-area").val(html);
+                    $("#html-container").html(html);
+                }
+            });
+            //return false;
+        })
+
+        $("#checkOriginal").click(function () {
+            var val = $("#input-area").val();
+            $.ajax({
+                type: "POST",
+                url: "/Home/CheckOriginal",
+                data: { "value": val },
+                success: function (response) {
+                    var isOriginal = response == false ? "The current HTML sample is original." : "The current Html sample is not original."
+                    kendo.alert(isOriginal)
+                }
+            });
+        })
+    </script>
+
+    <style>
+        #content-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #btn-wrapper {
+            margin-left: 15px;
+            margin-right: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 150px;
+            flex-wrap: wrap;
+        }
+
+        #btn-wrapper button {
+                width: 100%;
+                color: #060606;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                background: #ececec;
+                border: 1px solid gray;
+                font-size: 12px;
+                font-weight: 600;
+                text-transform: uppercase;
+         }
+
+            #btn-wrapper button:hover {
+                background: #f35800;
+                color: white;
+                border: 1px solid transparent;
             }
-        });
-    })
-</script>
+
+            #btn-wrapper button:active {
+            outline: none;
+            }
+
+        button#save {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+                #input-area-wrapper, #html-container-wrapper {
+                    width: 40%;
+                }
+
+        #input-area {
+            resize: none;
+            height: 350px;
+            width: 100%;
+            border: 1px solid lightgrey;
+            padding: 5px;
+        }
+
+        #html-container {
+            border: 1px solid lightgrey;
+            height: 350px;
+            padding: 5px;
+        }
+
+        #grid {
+            margin-top:10px;
+        }
+
+        *:focus {
+            outline: none;
+        }
+    </style>

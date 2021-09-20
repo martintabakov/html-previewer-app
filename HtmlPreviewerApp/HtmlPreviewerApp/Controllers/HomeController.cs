@@ -18,8 +18,7 @@ namespace HtmlPreviewerApp.Controllers
         }
 
         public IActionResult Index()
-        {
-            
+        {            
             return View();
         }
         [HttpPost]
@@ -31,7 +30,6 @@ namespace HtmlPreviewerApp.Controllers
                 itemToUpdate.First().HtmlSample = html;
                 itemToUpdate.First().LastEditDate = DateTime.UtcNow;
                 _cc.SaveChanges();
-
             }
 
             else 
@@ -62,7 +60,7 @@ namespace HtmlPreviewerApp.Controllers
 
         public IActionResult GetHtml(int id)
         {
-            ViewBag.EditId = id;
+            
             var sample = _cc.HtmlSamples.Where(model => model.SampleID == id).ToList();
             return Json(sample);
         }
@@ -71,7 +69,6 @@ namespace HtmlPreviewerApp.Controllers
         {
             var result = _cc.HtmlSamples.Where(model => model.HtmlSample == value).Count() == 0;
             return result;
-
         }
     }
 }
