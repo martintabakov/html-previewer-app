@@ -112,6 +112,6 @@ ALTER DATABASE [HtmlSamples] SET  READ_WRITE
 GO
 ```
 
-* Make sure to change the FILENAME location to where your Management Studio is located. 
+*Note Make sure to change the FILENAME location to where your Management Studio is located. 
 
-1. After the database is generated, build and run the project.
+2. After the database is generated, build and run the project.
