@@ -3,21 +3,25 @@
 }
 
 @model HtmlPreviewerApp.Models.HtmlModel
-    <div id="content-wrapper">
-<div id="input-area-wrapper">
-<h3>HTML Input</h3>
-<textarea asp-for="HtmlSample" id="input-area" rows="5" cols="20"></textarea>
- </div>
-        <div id="btn-wrapper">
-            <button id="run">Run</button>
-            <button id="save">Save</button>
-            <button id="checkOriginal">Check Original</button>
+<div id="content-wrapper">
+    <div id="input-area-wrapper">
+    <h3>HTML Input</h3>
+    <textarea id="input-area" rows="5" cols="20"></textarea>
+     </div>
+            <div id="btn-wrapper">
+                <button id="run">Run</button>
+                <button id="save">Save</button>
+                <button id="checkOriginal">Check Original</button>
+            </div>
+            <div id="html-container-wrapper">
+            <h3>HTML Preview</h3>
+            <div id="iframe-wrapper">
+            <iframe  id="html-container">
+            </iframe>
+            </div>
+            </div>
+
         </div>
-        <div id="html-container-wrapper">
-        <h3>HTML Preview</h3>
-        <div id="html-container"></div>
-        </div>
-    </div>
     <div id="grid"></div>
     <script>
         var editId;
@@ -47,9 +51,9 @@
             },
             columns: [
                 {
-                    template: "<a class='getHtml' href='#:sampleID#'>#: title #</a>",
+                    template: "<a class='getHtml' href='Home/Edit/#:sampleID#'>#: title #</a>",
                     field: "title",
-                    title: "Html Sample",
+                    title: "Html Sample Link",
                     width: 240
                 },
                 {
@@ -58,19 +62,20 @@
                     width: 240
                 }, {
                     field: "createDate",
-                    title: "Create Date"
+                    title: "Create Date",
+                    format: "{0: dd-MM-yyyy}"
                 }, {
                     field: "lastEditDate",
-                    title: "Last Edit Date"
-                }, {
-                    field: "Country",
-                    width: 150
+                    title: "Last Edit Date",
+                    format: "{0: dd-MM-yyyy}"
                 }]
         });
 
         $("#run").click(function () {
             var html = $("#input-area").val();
-            $("#html-container").html(html)
+            var doc = $("#html-container")[0].contentWindow.document;
+            var $body = $('body', doc);
+            $body.html(html);
         });
         $("#save").click(function () {
             var html = $("#input-area").val();
@@ -85,23 +90,7 @@
                 }
             });
 
-        })
-
-        $("#grid").on("click", "a.getHtml", function (e) {
-            var dataItem = $("#grid").data("kendoGrid").dataItem($(e.target).closest("tr"));
-            $.ajax({
-                type: "POST",
-                url: "/Home/GetHtml",
-                data: { "id": dataItem.id },
-                success: function (response) {
-                    var html = response[0].htmlSample;
-                    editId = response[0].sampleID;
-                    $("#input-area").val(html);
-                    $("#html-container").html(html);
-                }
-            });
-            //return false;
-        })
+        });
 
         $("#checkOriginal").click(function () {
             var val = $("#input-area").val();
@@ -160,9 +149,9 @@
             margin-bottom: 15px;
         }
 
-                #input-area-wrapper, #html-container-wrapper {
-                    width: 40%;
-                }
+        #input-area-wrapper, #html-container-wrapper {
+            width: 40%;
+        }
 
         #input-area {
             resize: none;
@@ -176,6 +165,7 @@
             border: 1px solid lightgrey;
             height: 350px;
             padding: 5px;
+            width: 100%;
         }
 
         #grid {

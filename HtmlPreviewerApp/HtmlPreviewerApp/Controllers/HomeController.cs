@@ -70,5 +70,12 @@ namespace HtmlPreviewerApp.Controllers
             var result = _cc.HtmlSamples.Where(model => model.HtmlSample == value).Count() == 0;
             return result;
         }
+
+        public IActionResult Edit(int id)
+        {
+
+                var sample = _cc.HtmlSamples.Where(model => model.SampleID == id).First();
+                return View(sample);
+        }
     }
 }
