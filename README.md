@@ -17,7 +17,7 @@ An application that renders the value of a textarea as HTML.
 ```
 USE [master]
 GO
-/****** Object:  Database [HtmlSamples]    Script Date: 16/09/2021 9:05:17 PM ******/
+/****** Object:  Database [HtmlSamples]    Script Date: 20/09/2021 10:53:01 AM ******/
 CREATE DATABASE [HtmlSamples]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -94,7 +94,7 @@ ALTER DATABASE [HtmlSamples] SET QUERY_STORE = OFF
 GO
 USE [HtmlSamples]
 GO
-/****** Object:  Table [dbo].[HtmlSamples]    Script Date: 16/09/2021 9:05:17 PM ******/
+/****** Object:  Table [dbo].[HtmlSamples]    Script Date: 20/09/2021 10:53:01 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -104,7 +104,11 @@ CREATE TABLE [dbo].[HtmlSamples](
 	[SampleID] [int] NOT NULL,
 	[CreateDate] [smalldatetime] NOT NULL,
 	[LastEditDate] [smalldatetime] NOT NULL,
-	[Title] [nvarchar](50) NOT NULL
+	[Title] [nvarchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[SampleID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 USE [master]
