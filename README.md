@@ -6,8 +6,9 @@ An application that renders the value of a textarea as HTML.
 
 1. JavaScript
 1. jQuery
-1. .Net Core 3.1
-1. SQL Server
+2. Kendo UI
+3. .Net Core 3.1
+4. SQL Server
 
 ## How to setup the database and run the project
 
