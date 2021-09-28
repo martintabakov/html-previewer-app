@@ -22,7 +22,7 @@ namespace HtmlPreviewerApp.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Index(string html, int? editId)
+        public IActionResult Index(string html, Guid? editId)
         {
             if(editId != null)
             {
@@ -34,14 +34,14 @@ namespace HtmlPreviewerApp.Controllers
 
             else 
             {
-                var id = _cc.HtmlSamples.Count();
+                //var id = _cc.HtmlSamples.Count();
                 var model = new HtmlModel()
                 {
                     HtmlSample = html,
                     CreateDate = DateTime.UtcNow,
                     LastEditDate = DateTime.UtcNow,
-                    SampleID = ++id,
-                    Title = "Html Sample #" + id
+                    SampleID = new Guid(),
+                    Title = "Html Sample"
 
                 };
                 _cc.Add(model);
@@ -58,7 +58,7 @@ namespace HtmlPreviewerApp.Controllers
         }
 
 
-        public IActionResult GetHtml(int id)
+        public IActionResult GetHtml(Guid id)
         {
             
             var sample = _cc.HtmlSamples.Where(model => model.SampleID == id).ToList();
@@ -71,7 +71,7 @@ namespace HtmlPreviewerApp.Controllers
             return result;
         }
 
-        public IActionResult Edit(int id)
+        public IActionResult Edit(Guid id)
         {
 
                 var sample = _cc.HtmlSamples.Where(model => model.SampleID == id).First();

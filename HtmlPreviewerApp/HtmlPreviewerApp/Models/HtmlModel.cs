@@ -11,7 +11,7 @@ namespace HtmlPreviewerApp.Models
         public string HtmlSample { get; set; }
 
         [Key]
-        public int SampleID { get; set; }
+        public Guid SampleID { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime LastEditDate { get; set; }
         public string Title { get; set; }
