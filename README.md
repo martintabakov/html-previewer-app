@@ -101,7 +101,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 CREATE TABLE [dbo].[HtmlSamples](
 	[HtmlSample] [nvarchar](max) NOT NULL,
-	[SampleID] [int] NOT NULL,
+	[SampleID] [uniqueidentifier] NOT NULL,
 	[CreateDate] [smalldatetime] NOT NULL,
 	[LastEditDate] [smalldatetime] NOT NULL,
 	[Title] [nvarchar](50) NOT NULL,
